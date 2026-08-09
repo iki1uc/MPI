@@ -26,3 +26,7 @@ MPI liefert die physikalische Grundlage,
 
 ## Status
 MPI ist aktiv, eigenständig und vollständig iki1uc.
+
+License
+
+MIT — free to use and modify. Author credit (© iki1uc wieimmer) must be retained per the license terms. See LICENSE.
