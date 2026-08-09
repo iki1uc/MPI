@@ -1,30 +1,72 @@
 <!DOCTYPE html>
-<html lang="de">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>4u – Response Layer</title>
-
-<style>
-body{background:#000;color:#0f0;font-family:monospace;padding:20px;}
-pre{background:#111;padding:20px;border:1px solid #333;}
-button{background:#111;color:#0f0;border:1px solid #333;padding:8px 16px;}
-</style>
+  <meta charset="UTF-8">
+  <title>MPI – Interaktionsraum</title>
+  <script type="module" src="Math.js"></script>
+  <script type="module" src="Resp.js"></script>
 </head>
 
 <body>
 
-<h1>4u – Response Layer</h1>
+<h1>MPI – Mathematik & Physik erfüllt</h1>
 
-<button onclick="show()">RESPO</button>
+<!-- MathML Beispiel -->
+<math display="block">
+  <mrow>
+    <msup><mn>3</mn><mn>3</mn></msup>
+    <mo>=</mo><mn>27</mn>
+  </mrow>
+</math>
 
-<pre id="out">Bereit...</pre>
+<!-- Slider -->
+<div>
+  <label>Temperatur</label>
+  <input id="temp" type="range" min="-50" max="200" value="20">
+</div>
 
-<script type="module">
-import { respo } from "./respo.js";
+<div>
+  <label>Druck</label>
+  <input id="pressure" type="range" min="0" max="10" value="1">
+</div>
 
-function show(){
-  out.textContent = JSON.stringify(respo, null, 2);
-}
+<div>
+  <label>Soll</label>
+  <input id="soll" type="range" min="0" max="100" value="50">
+</div>
+
+<div>
+  <label>Ist</label>
+  <input id="ist" type="range" min="0" max="100" value="50">
+</div>
+
+<!-- MPI‑Status -->
+<div id="mpiState"></div>
+
+<!-- 4u‑Response -->
+<div class="response" id="responseDiv">
+  OK / NOK / FLOW / BREAK / ECHO / VOID / ROOT
+</div>
+
+<script>
+  function update() {
+    const temp = +document.getElementById("temp").value;
+    const pressure = +document.getElementById("pressure").value;
+    const soll = +document.getElementById("soll").value;
+    const ist = +document.getElementById("ist").value;
+
+    const mpi = calcMPIState(temp, pressure);
+    const resp = mapMPIto4u(mpi);
+
+    document.getElementById("mpiState").innerText = "MPI: " + mpi;
+    document.getElementById("responseDiv").innerText = resp;
+  }
+
+  document.querySelectorAll("input").forEach(el => {
+    el.addEventListener("input", update);
+  });
+
+  update();
 </script>
 
 </body>
