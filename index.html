@@ -13,39 +13,6 @@
   }
 </style>
 
-<canvas id="holoCanvas" width="300" height="300"></canvas>
-
-<script type="module">
-  import { runSystem } from "./MPI.system.js";
-  import { renderHolo } from "./MPI.holo.js";
-
-  function update() {
-    const temp = +document.getElementById("temp").value;
-    const pressure = +document.getElementById("pressure").value;
-    const soll = +document.getElementById("soll").value;
-    const ist = +document.getElementById("ist").value;
-
-    const sys = runSystem(temp, pressure, soll, ist);
-
-    document.getElementById("mpiState").innerText =
-      `MPI: ${sys.mpi.mpi} | Score: ${sys.mpi.score.toFixed(2)} | Wette: ${sys.mpi.bet}`;
-
-    document.getElementById("responseDiv").innerText = sys.fourU;
-
-    renderHolo(sys.mpi.score, sys.mpi.bet);
-
-    document.getElementById("systemDebug").innerText =
-      JSON.stringify(sys, null, 2);
-  }
-
-  document.querySelectorAll("input").forEach(el => {
-    el.addEventListener("input", update);
-  });
-
-  update();
-</script>
-
-
 <h1>MPI.holo + MPI.system · iki1uc</h1>
 
 <div class="row">
@@ -76,8 +43,8 @@
 </div>
 
 <script type="module">
-  import { runSystem } from "./System.js";
-  import { renderHolo } from "./Holo.js";
+  import { runSystem } from "./MPI.system.js";
+  import { renderHolo } from "./MPI.holo.js";
 
   function update() {
     const temp = +document.getElementById("temp").value;
@@ -87,17 +54,13 @@
 
     const sys = runSystem(temp, pressure, soll, ist);
 
-    // MPI
     document.getElementById("mpiState").innerText =
       `MPI: ${sys.mpi.mpi} | Score: ${sys.mpi.score.toFixed(2)} | Wette: ${sys.mpi.bet}`;
 
-    // 4u
     document.getElementById("responseDiv").innerText = sys.fourU;
 
-    // HOLO
     renderHolo(sys.mpi.score, sys.mpi.bet);
 
-    // SYSTEM
     document.getElementById("systemDebug").innerText =
       JSON.stringify(sys, null, 2);
   }
