@@ -1,16 +1,50 @@
-const response = mapMPIto4u(result.bet);
+<style>
+  body { background:#000; color:#0f0; font-family:Consolas; padding:20px; }
+  .row { margin-bottom:10px; }
+  .box {
+    border:1px solid #0f0;
+    padding:10px;
+    margin-top:20px;
+  }
+  canvas {
+    background:#111;
+    border:1px solid #0f0;
+    margin-top:10px;
+  }
+</style>
 
-   <input id="temp" placeholder="Temp">
-   <input id="pressure" placeholder="Pressure">
-   <input id="soll" placeholder="Soll">
-   <input id="ist" placeholder="Ist">
+<h1>MPI.holo + MPI.system · iki1uc</h1>
 
-   <div id="mpiState"></div>
-   <div id="responseDiv"></div>
+<div class="row">
+  <input id="temp" placeholder="Temp">
+  <input id="pressure" placeholder="Pressure">
+  <input id="soll" placeholder="Soll">
+  <input id="ist" placeholder="Ist">
+</div>
+
+<div class="box">
+  <h3>MPI‑State</h3>
+  <div id="mpiState"></div>
+</div>
+
+<div class="box">
+  <h3>4u‑Response</h3>
+  <div id="responseDiv"></div>
+</div>
+
+<div class="box">
+  <h3>MPI.holo (6D)</h3>
+  <canvas id="holoCanvas" width="300" height="300"></canvas>
+</div>
+
+<div class="box">
+  <h3>MPI.system</h3>
+  <pre id="systemDebug"></pre>
+</div>
 
 <script type="module">
-  import { calcMPIState } from "./Math.js";
-  import { mapMPIto4u } from "./Resp.js";
+  import { runSystem } from "./System.js";
+  import { renderHolo } from "./Holo.js";
 
   function update() {
     const temp = +document.getElementById("temp").value;
@@ -18,13 +52,21 @@ const response = mapMPIto4u(result.bet);
     const soll = +document.getElementById("soll").value;
     const ist = +document.getElementById("ist").value;
 
-    const result = calcMPIState(temp, pressure, soll, ist);
-    const response = mapMPIto4u(result.bet);
+    const sys = runSystem(temp, pressure, soll, ist);
 
+    // MPI
     document.getElementById("mpiState").innerText =
-      `MPI: ${result.mpi} | Score: ${result.score} | Wette: ${result.bet}`;
+      `MPI: ${sys.mpi.mpi} | Score: ${sys.mpi.score.toFixed(2)} | Wette: ${sys.mpi.bet}`;
 
-    document.getElementById("responseDiv").innerText = response;
+    // 4u
+    document.getElementById("responseDiv").innerText = sys.fourU;
+
+    // HOLO
+    renderHolo(sys.mpi.score, sys.mpi.bet);
+
+    // SYSTEM
+    document.getElementById("systemDebug").innerText =
+      JSON.stringify(sys, null, 2);
   }
 
   document.querySelectorAll("input").forEach(el => {
