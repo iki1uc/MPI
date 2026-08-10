@@ -1,3 +1,11 @@
+<input id="temp" placeholder="Temp">
+<input id="pressure" placeholder="Pressure">
+<input id="soll" placeholder="Soll">
+<input id="ist" placeholder="Ist">
+
+<div id="mpiState"></div>
+<div id="responseDiv"></div>
+
 <script type="module">
   import { calcMPIState } from "./Math.js";
   import { mapMPIto4u } from "./Resp.js";
@@ -9,20 +17,10 @@
     const ist = +document.getElementById("ist").value;
 
     const result = calcMPIState(temp, pressure, soll, ist);
-
     const response = mapMPIto4u(result.bet);
 
-   <input id="temp" placeholder="Temp">
-<input id="pressure" placeholder="Pressure">
-<input id="soll" placeholder="Soll">
-<input id="ist" placeholder="Ist">
-
-<div id="mpiState"></div>
-<div id="responseDiv"></div>
-
-    
     document.getElementById("mpiState").innerText =
-      "MPI: " + result.mpi + " | Score: " + result.score + " | Wette: " + result.bet;
+      `MPI: ${result.mpi} | Score: ${result.score} | Wette: ${result.bet}`;
 
     document.getElementById("responseDiv").innerText = response;
   }
