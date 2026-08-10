@@ -1,0 +1,87 @@
+<style>
+  body { background:#000; color:#0f0; font-family:Consolas; padding:20px; }
+  .row { margin-bottom:10px; }
+  .bar {
+    height:20px;
+    background:#222;
+    border:1px solid #0f0;
+    margin-top:5px;
+  }
+  .fill {
+    height:100%;
+    background:#0f0;
+    width:0%;
+  }
+  .box {
+    border:1px solid #0f0;
+    padding:10px;
+    margin-top:20px;
+  }
+</style>
+
+<h1>MPI.full · iki1uc</h1>
+
+<div class="row">
+  <input id="temp" placeholder="Temp">
+  <input id="pressure" placeholder="Pressure">
+  <input id="soll" placeholder="Soll">
+  <input id="ist" placeholder="Ist">
+</div>
+
+<div class="box">
+  <h3>MPI‑State</h3>
+  <div id="mpiState"></div>
+
+  <div class="bar"><div id="scoreBar" class="fill"></div></div>
+</div>
+
+<div class="box">
+  <h3>4u‑Response</h3>
+  <div id="responseDiv"></div>
+</div>
+
+<div class="box">
+  <h3>Debug</h3>
+  <pre id="debug"></pre>
+</div>
+
+<script type="module">
+  import { calcMPIState } from "./Math.js";
+  import { mapMPIto4u } from "./Resp.js";
+
+  function update() {
+    try {
+      const temp = +document.getElementById("temp").value;
+      const pressure = +document.getElementById("pressure").value;
+      const soll = +document.getElementById("soll").value;
+      const ist = +document.getElementById("ist").value;
+
+      const result = calcMPIState(temp, pressure, soll, ist);
+      const response = mapMPIto4u(result.bet);
+
+      // MPI‑Ausgabe
+      document.getElementById("mpiState").innerText =
+        `MPI: ${result.mpi} | Score: ${result.score.toFixed(2)} | Wette: ${result.bet}`;
+
+      // Score‑Bar
+      const scorePercent = Math.max(0, Math.min(100, result.score));
+      document.getElementById("scoreBar").style.width = scorePercent + "%";
+
+      // 4u‑Response
+      document.getElementById("responseDiv").innerText = response;
+
+      // Debug
+      document.getElementById("debug").innerText =
+        JSON.stringify({ temp, pressure, soll, ist, result, response }, null, 2);
+
+    } catch (err) {
+      document.getElementById("debug").innerText = "Fehler: " + err;
+    }
+  }
+
+  document.querySelectorAll("input").forEach(el => {
+    el.addEventListener("input", update);
+  });
+
+  update();
+</script>
